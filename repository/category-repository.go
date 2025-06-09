@@ -1,11 +1,15 @@
 package repository
 
-import "context"
+import (
+	"context"
+	"database/sql"
+	"go-restful-api/model/entity"
+)
 
 type CategoryRepository interface {
-	Save(ctx context.Context)
-	Update(ctx context.Context)
-	Delete(ctx context.Context)
-	FindById(ctx context.Context)
-	FindAll(ctx context.Context)
+	Save(ctx context.Context, tx sql.Tx, category entity.Category) entity.Category
+	Update(ctx context.Context, tx sql.Tx, category entity.Category) entity.Category
+	Delete(ctx context.Context, tx sql.Tx, category entity.Category)
+	FindById(ctx context.Context, tx sql.Tx, categoryId int)
+	FindAll(ctx context.Context, tx sql.Tx) []entity.Category
 }
