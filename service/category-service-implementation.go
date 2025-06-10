@@ -1,0 +1,82 @@
+package service
+
+import (
+	"context"
+	"database/sql"
+	"go-restful-api/helper"
+	"go-restful-api/model/entity"
+	"go-restful-api/model/web"
+	"go-restful-api/repository"
+)
+
+type CategoryServiceImplementation struct {
+	Repository repository.CategoryRepository
+	Db         *sql.DB
+}
+
+// Every method here is Transactional
+
+func (service *CategoryServiceImplementation) Create(ctx context.Context, req web.CategoryCreateRequest) web.CategoryResponse {
+	tx, err := service.Db.Begin()
+	helper.PanicIfError(err)
+	defer helper.CommitOrRollback(tx)
+
+	category := entity.Category{
+		Name: req.Name,
+	}
+
+	category = service.Repository.Save(ctx, tx, category)
+
+	return helper.ToCategoryResponse(category)
+}
+
+func (service *CategoryServiceImplementation) Update(ctx context.Context, req web.CategoryUpdateRequest) web.CategoryResponse {
+	tx, err := service.Db.Begin()
+	helper.PanicIfError(err)
+	defer helper.CommitOrRollback(tx)
+
+	category, err := service.Repository.FindById(ctx, tx, req.Id)
+	helper.PanicIfError(err)
+
+	category.Name = req.Name
+
+	category = service.Repository.Update(ctx, tx, category)
+
+	return helper.ToCategoryResponse(category)
+}
+
+func (service *CategoryServiceImplementation) Delete(ctx context.Context, categoryId int) {
+	tx, err := service.Db.Begin()
+	helper.PanicIfError(err)
+	defer helper.CommitOrRollback(tx)
+
+	category, err := service.Repository.FindById(ctx, tx, categoryId)
+	helper.PanicIfError(err)
+
+	service.Repository.Delete(ctx, tx, category)
+}
+
+func (service *CategoryServiceImplementation) FindById(ctx context.Context, categoryId int) web.CategoryResponse {
+	tx, err := service.Db.Begin()
+	helper.PanicIfError(err)
+	defer helper.CommitOrRollback(tx)
+
+	category, err := service.Repository.FindById(ctx, tx, categoryId)
+	helper.PanicIfError(err)
+
+	return helper.ToCategoryResponse(category)
+}
+
+func (service *CategoryServiceImplementation) FindAll(ctx context.Context) []web.CategoryResponse {
+	tx, err := service.Db.Begin()
+	helper.PanicIfError(err)
+	defer helper.CommitOrRollback(tx)
+
+	categories := service.Repository.FindAll(ctx, tx)
+
+	var categoryResponses []web.CategoryResponse
+	for _, category := range categories {
+		categoryResponses = append(categoryResponses, helper.ToCategoryResponse(category))
+	}
+	return categoryResponses
+}
