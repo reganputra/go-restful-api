@@ -7,7 +7,7 @@ import (
 )
 
 func DatabaseConnect() *sql.DB {
-	db, err := sql.Open("mysql", "root:root@tcp(localhost:3306)/go_restful_api")
+	db, err := sql.Open("mysql", "root@tcp(localhost:3306)/go_restul_api")
 	helper.PanicIfError(err)
 
 	db.SetMaxIdleConns(5)
