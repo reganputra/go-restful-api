@@ -32,10 +32,11 @@ func (c *CategoryRepositoryImplementation) Update(ctx context.Context, tx *sql.T
 	return category
 }
 
-func (c *CategoryRepositoryImplementation) Delete(ctx context.Context, tx *sql.Tx, category entity.Category) {
+func (c *CategoryRepositoryImplementation) Delete(ctx context.Context, tx *sql.Tx, category entity.Category) entity.Category {
 	deleteQuery := "DELETE FROM category WHERE id = ?"
 	_, err := tx.ExecContext(ctx, deleteQuery, category.Id)
 	helper.PanicIfError(err) // Handle error if the query fails
+	return category
 }
 
 func (c *CategoryRepositoryImplementation) FindById(ctx context.Context, tx *sql.Tx, categoryId int) (entity.Category, error) {
