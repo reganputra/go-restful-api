@@ -17,6 +17,7 @@ func main() {
 
 	db := connection.DatabaseConnect()
 	validate := validator.New()
+
 	categoryRepository := repository.NewCategoryRepository()
 	categoryService := service.NewCategoryService(categoryRepository, db, validate)
 	categoryController := controllers.NewCategoryController(categoryService)
