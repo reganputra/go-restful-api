@@ -2,11 +2,14 @@ package main
 
 import (
 	"github.com/go-playground/validator/v10"
+	_ "github.com/go-sql-driver/mysql"
 	"github.com/julienschmidt/httprouter"
 	"go-restful-api/connection"
 	"go-restful-api/controllers"
+	"go-restful-api/helper"
 	"go-restful-api/repository"
 	"go-restful-api/service"
+	"net/http"
 )
 
 func main() {
@@ -24,4 +27,11 @@ func main() {
 	router.POST("/api/categories", categoryController.Create)
 	router.PUT("/api/categories/:categoryId", categoryController.Update)
 	router.DELETE("/api/categories/:categoryId", categoryController.Delete)
+
+	server := http.Server{
+		Addr:    "localhost:3000",
+		Handler: router,
+	}
+	err := server.ListenAndServe()
+	helper.PanicIfError(err)
 }
