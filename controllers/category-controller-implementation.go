@@ -13,6 +13,12 @@ type CategoryControllerImplementation struct {
 	CategoryService service.CategoryService
 }
 
+func NewCategoryController(categoryService service.CategoryService) CategoryController {
+	return &CategoryControllerImplementation{
+		CategoryService: categoryService,
+	}
+}
+
 func (c *CategoryControllerImplementation) Create(w http.ResponseWriter, r *http.Request, params httprouter.Params) {
 
 	categoryCreateRequest := web.CategoryCreateRequest{}

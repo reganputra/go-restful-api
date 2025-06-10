@@ -16,6 +16,14 @@ type CategoryServiceImplementation struct {
 	Validate   *validator.Validate
 }
 
+func NewCategoryService(repository repository.CategoryRepository, db *sql.DB, validate *validator.Validate) CategoryService {
+	return &CategoryServiceImplementation{
+		Repository: repository,
+		Db:         db,
+		Validate:   validate,
+	}
+}
+
 // Every method here is Transactional
 
 func (service *CategoryServiceImplementation) Create(ctx context.Context, req web.CategoryCreateRequest) web.CategoryResponse {
